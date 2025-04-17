@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Display</title>
+    <style>
+        table { border-collapse: collapse; margin-bottom: 30px; }
+        td, th { border: 1px solid #444; padding: 8px 12px; }
+    </style>
+</head>
+<body>
+    <h1>Table 1</h1>
+
+    <table id="csvTable">
+        <tr>
+            <th>Index #</th>
+            <th>Value</th>
+        </tr>
+    </table>
+
+    <h1>Table 2</h1>
+
+    <table id="resultTable">
+        <tr>
+            <th>Category</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Alpha</td>
+            <td id="alphaValue"></td>
+        </tr>
+        <tr>
+            <td>Beta</td>
+            <td id="betaValue"></td>
+        </tr>
+        <tr>
+            <td>Charlie</td>
+            <td id="charlieValue"></td>
+        </tr>
+    </table>
+
+    <script>
+        let csvData = [];
+        fetch('Table_input.csv')
+            .then(response => response.text())
+            .then(csvText => {
+                const rows = csvText.trim().split('\n');
+
+                csvData = rows.slice(1).map(row => {
+                    const [index, value] = row.split(',');
+                    return { index: index.trim(), value: value.trim() };
+                });
+
+                console.log(csvData);
+                displayCSV(csvData);
+                displayTable2();
+            })
+            .catch(error => console.error('Error fetching the CSV file:', error));
+
+
+        function displayCSV(rows) {
+            const table = document.getElementById('csvTable');
+
+            for (let i = 0; i < rows.length; i++) {
+                let currentRow = rows[i];
+                console.log(currentRow);
+                let index = currentRow.index;
+                let value = currentRow.value;
+                let newRow = `<tr><td>${index}</td><td>${value}</td></tr>`;
+                table.innerHTML+=newRow;
+            }
+        }
+
+        function getValueByIndex(searchIndex) {
+
+            for (let i = 0; i < csvData.length; i++) {
+                let currentRow = csvData[i];
+                let index = currentRow.index;
+                let value = currentRow.value;
+
+                if (index.trim() === searchIndex) {
+                    return Number(value.trim());
+                }
+            }
+
+            console.log(`Index ${searchIndex} not found.`);
+        }
+
+        function displayTable2(){
+            const alpha = document.getElementById('alphaValue');
+            const beta = document.getElementById('betaValue');
+            const charlie = document.getElementById('charlieValue');
+            let alphaValue = getValueByIndex('A5')+getValueByIndex('A20');
+            let betaValue = getValueByIndex('A15')/getValueByIndex('A7');;
+            let charlieValue = getValueByIndex('A13')*getValueByIndex('A12');;
+            alpha.innerHTML = alphaValue;
+            beta.innerHTML = betaValue;
+            charlie.innerHTML = charlieValue;
+        }
+    </script>
+</body>
+</html>
