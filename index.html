@@ -42,7 +42,7 @@
 
     <script>
         let csvData = [];
-        fetch('Table_input.csv')
+        fetch('/Table_input.csv')
             .then(response => response.text())
             .then(csvText => {
                 const rows = csvText.trim().split('\n');
@@ -52,7 +52,6 @@
                     return { index: index.trim(), value: value.trim() };
                 });
 
-                console.log(csvData);
                 displayCSV(csvData);
                 displayTable2();
             })
@@ -64,7 +63,6 @@
 
             for (let i = 0; i < rows.length; i++) {
                 let currentRow = rows[i];
-                console.log(currentRow);
                 let index = currentRow.index;
                 let value = currentRow.value;
                 let newRow = `<tr><td>${index}</td><td>${value}</td></tr>`;
@@ -83,8 +81,6 @@
                     return Number(value.trim());
                 }
             }
-
-            console.log(`Index ${searchIndex} not found.`);
         }
 
         function displayTable2(){
